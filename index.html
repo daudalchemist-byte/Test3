@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Manda 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#ff9ecf,#ffb3d9,#ffc2e2,#ffd6ec);
+background-size:300% 300%;
+animation:bgMove 18s ease infinite;
+overflow-x:hidden;
+color:#4a1f33;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* Scene system (FIXED) */
+.scene{
+position:fixed;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+opacity:0;
+pointer-events:none;
+transition:1s ease;
+}
+
+.scene.active{
+opacity:1;
+pointer-events:auto;
+}
+
+h1{
+font-family:'Dancing Script',cursive;
+font-size:3rem;
+margin-bottom:10px;
+}
+
+h2{
+font-family:'Playfair Display',serif;
+margin-bottom:20px;
+}
+
+button{
+margin:10px;
+padding:14px 28px;
+border:none;
+border-radius:40px;
+cursor:pointer;
+font-size:1rem;
+transition:0.3s ease;
+}
+
+.yes{background:#d81b60;color:white;}
+.no{background:#f8bbd0;color:#4a1f33;}
+button:hover{transform:scale(1.05);}
+
+/* Floating hearts (cannot block click) */
+.love{
+position:fixed;
+bottom:-30px;
+pointer-events:none;
+animation:floatUp linear forwards;
+opacity:0.35;
+z-index:1;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(0);}
+100%{transform:translateY(-110vh);}
+}
+
+/* Overlay */
+.overlay{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.55);
+opacity:0;
+pointer-events:none;
+transition:1s ease;
+z-index:5;
+}
+.overlay.show{
+opacity:1;
+pointer-events:auto;
+}
+
+/* Envelope */
+.envelope{
+width:320px;
+height:200px;
+background:#ffc2e2;
+border-radius:12px;
+position:relative;
+box-shadow:0 20px 50px rgba(0,0,0,0.4);
+}
+
+.flap{
+position:absolute;
+width:100%;
+height:100%;
+background:#ec407a;
+clip-path:polygon(0 0,100% 0,50% 60%);
+transform-origin:top;
+transition:0.8s ease;
+z-index:2;
+}
+
+.paper{
+position:absolute;
+width:90%;
+height:85%;
+background:white;
+top:100%;
+left:5%;
+border-radius:8px;
+padding:20px;
+transition:0.8s ease;
+overflow:auto;
+font-size:0.9rem;
+line-height:1.6;
+}
+
+.envelope.open .flap{transform:rotateX(180deg);}
+.envelope.open .paper{top:7%;}
+
+/* Gallery */
+.gallery-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+gap:15px;
+width:100%;
+max-width:600px;
+margin-top:20px;
+}
+
+.gallery-grid img{
+width:100%;
+border-radius:15px;
+object-fit:cover;
+aspect-ratio:1/1;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+transition:0.4s ease;
+}
+
+.gallery-grid img:hover{
+transform:scale(1.05);
+}
+
+/* Ending */
+#ending{
+background:linear-gradient(135deg,#ffd6ec,#ffc2e2);
+}
+
+.music-control{
+position:fixed;
+bottom:20px;
+right:20px;
+width:50px;height:50px;
+border-radius:50%;
+background:rgba(255,255,255,0.6);
+display:flex;
+justify-content:center;
+align-items:center;
+cursor:pointer;
+z-index:20;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro" class="scene active">
+<h1>For Manda 💌</h1>
+<h2>Will you be my Valentine?</h2>
+<button class="yes" id="yesBtn">Yes, always 💖</button>
+<button class="no" id="noBtn">No...</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div id="letterScene" class="scene">
+<div class="envelope" id="envelope">
+<div class="flap"></div>
+<div class="paper" id="letterContent"></div>
+</div>
+</div>
+
+<div id="gallery" class="scene">
+<h2>Our Memories 📸</h2>
+<div class="gallery-grid">
+<img src="photo1.jpeg">
+<img src="photo2.jpeg">
+<img src="photo3.jpeg">
+</div>
+</div>
+
+<div id="ending" class="scene">
+<h2>Some stories don’t begin loudly.</h2>
+<p>They begin with a simple choice.<br><br>
+And today, you chose us 🤍</p>
+</div>
+
+<div class="music-control" onclick="toggleMusic()">🎵</div>
+<audio id="bgMusic" src="laufey-valentine.mp3"></audio>
+
+<script>
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const overlay=document.getElementById("overlay");
+const envelope=document.getElementById("envelope");
+const intro=document.getElementById("intro");
+const letterScene=document.getElementById("letterScene");
+const gallery=document.getElementById("gallery");
+const ending=document.getElementById("ending");
+const letterContent=document.getElementById("letterContent");
+const music=document.getElementById("bgMusic");
+
+let yesScale=1;
+music.volume=0.2;
+
+/* Floating hearts */
+function createLove(){
+let love=document.createElement("div");
+love.classList.add("love");
+love.innerHTML="💗";
+love.style.left=Math.random()*100+"vw";
+love.style.fontSize=(14+Math.random()*8)+"px";
+love.style.animationDuration=(10+Math.random()*5)+"s";
+document.body.appendChild(love);
+setTimeout(()=>{love.remove();},15000);
+}
+setInterval(createLove,2500);
+
+noBtn.addEventListener("click",()=>{
+yesScale+=0.15;
+yesBtn.style.transform=`scale(${yesScale})`;
+});
+
+yesBtn.addEventListener("click",()=>{
+overlay.classList.add("show");
+
+setTimeout(()=>{
+intro.classList.remove("active");
+letterScene.classList.add("active");
+},600);
+
+setTimeout(()=>{
+envelope.classList.add("open");
+letterContent.innerHTML=`Manda,<br><br>
+From the very beginning, you made everything feel lighter.
+You bring warmth into ordinary moments,
+and somehow the world feels softer when you're around.<br><br>
+I don’t just want today.
+I want all the small tomorrows with you.<br><br>
+Happy Valentine’s Day 🤍`;
+fadeInMusic();
+},1200);
+
+setTimeout(()=>{
+letterScene.classList.remove("active");
+gallery.classList.add("active");
+},9000);
+
+setTimeout(()=>{
+gallery.classList.remove("active");
+ending.classList.add("active");
+},15000);
+});
+
+function toggleMusic(){
+if(music.paused){music.play();}
+else{music.pause();}
+}
+
+function fadeInMusic(){
+music.play();
+music.volume=0;
+let vol=0;
+const fade=setInterval(()=>{
+if(vol<0.2){
+vol+=0.02;
+music.volume=vol;
+}else{
+clearInterval(fade);
+}
+},200);
+}
+</script>
+
+</body>
+</html>
